@@ -1,1 +1,211 @@
 @import url('https://fonts.googleapis.com/css?family=Lato:300|Montserrat|Raleway'); // google fonts outside
+@import '../sass/components/variables';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+    width: 100%;
+
+    body {
+        font-family: $letters-desc;
+        font-weight: normal;
+        font-size: $init;
+        color: $white;
+    }
+}
+
+.input {
+    margin: 0 .5rem;
+    padding: 1rem 1rem;
+    font-family: inherit;
+    font-size: $init * 1.1;
+    font-weight: normal;
+    color: $dark;
+    background: $white;
+    border: 1px solid darken($gray, 20%);
+    border-radius: 4px;
+    outline: none;
+
+    transition: border-color .3s 0s ease-out;
+
+    &:focus {
+        border-color: $section-income;
+    }
+}
+
+.main-header {
+    min-height: 300px;
+    height: 300px;
+    width: 100%;
+    background: linear-gradient(to top right, rgba(95, 6, 6, .8), 50%, transparent), linear-gradient(to bottom left, rgba(95, 6, 6, .5), 35%, transparent), url('../images/bg-min.jpg') no-repeat center;
+    background-size: cover;
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: space-evenly;
+    align-items: center;
+
+    .main-header__available-budget {
+        font-size: $init * 1.2;
+
+        .available-budget__head {
+            display: inline-block;
+        }
+    }
+
+    .main-header__main-score {
+        margin: 1.2rem 0;
+        font-family: $numbers-main;
+        font-weight: normal;
+        font-size: $init * 3;
+        letter-spacing: .5rem;
+    }
+
+    .main-header__income-section {
+        min-width: 40%;
+        width: 40%;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: space-between;
+        padding: 1rem;
+        background: $section-income;
+
+        .income-section__head {
+            font-size: $init * 1.1;
+            color: lighten($dark, 20%);
+        }
+
+        .income-section__score {
+            margin-right: 2rem;
+            font-family: $numbers-another;
+            font-size: $init * 1.2;
+            font-weight: 300;
+            letter-spacing: .2rem;
+        }
+    }
+
+    .main-header__expenses-section {
+        @extend .main-header__income-section;
+        position: relative;
+        background: $section-expenses;
+
+        .expenses-section__head {
+            @extend .income-section__head;
+        }
+
+        .expenses-section__score {
+            @extend .income-section__score;
+        }
+
+        .expenses-section-badg {
+            display: inline-block;
+            position: absolute;
+            right: 1%;
+
+            margin: 0 auto;
+            font-family: $numbers-another;
+            font-weight: bold;
+            font-size: .7rem;
+            padding: .2rem .4rem;
+            color: $dark;
+            background: $white;
+            opacity: .5;
+            border: 1px solid inherit;
+            border-radius: 4px;
+        }
+    }
+}
+
+.add-budget {
+    padding: 1rem 0;
+    background: $gray;
+    
+    .add-budget__container {
+        min-width: 60%;
+        width: 60%;
+        margin: 0 auto;
+        display: flex;
+        flex-flow: row nowrap;
+        justify-content: center;
+
+        #sellect-action {
+            @extend .input;
+            padding: 0;
+            padding-right: 1rem;
+            font-size: 2rem;
+            option {
+                margin-right: 1rem;
+            }
+        }
+
+        #input-description {
+            @extend .input;
+            width: 80%;
+        }
+
+        #input-value {
+            @extend .input;
+            width: 15%;
+            font-family: $numbers-another;
+            text-align: center;
+        }
+
+        .btn {
+            margin-left: 1rem;
+            padding: 1rem;
+            font-family: inherit;
+            background: inherit;
+            color: $section-income;
+            border: 1px solid $section-income;
+            border-radius: 10%;
+            
+            transition: all .2s 0s ease-out;
+            
+            &:hover,
+            &:active {
+                outline: none;
+                border-color: $section-expenses;
+                color: $section-expenses;
+                cursor: pointer;
+            }
+
+            &:active {
+                transform: translateY(.2rem);
+            }
+        }
+    }
+}
+
+.output-result {
+    display: flex;
+    flex-flow: row nowrap;
+    padding-top: 4rem;
+    min-height: 20rem;
+    height: 20rem;
+
+    .output-result__income-section {
+        min-width: 50%;
+        width: 50%;
+
+        .income-section__header {
+            font-size: $init * 1.4;
+            text-align: center;
+            color: $section-income;
+            letter-spacing: .2rem;
+            text-transform: uppercase;
+        }
+    }
+
+    .output-result__expenses-section {
+        @extend .output-result__income-section;
+
+        .expenses-section__header {
+            @extend .income-section__header;
+            color: $section-expenses;
+        }
+    }
+}

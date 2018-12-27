@@ -5,8 +5,55 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Budgety</title>
+    <link rel="stylesheet" href="../app/css/main.css">
 </head>
 <body>
+    <header class="main-header">
+        <div class="main-header__available-budget">
+            <h3 class="available-budget__head">Available Budget in</h3>
+            <span class="available-budget__mounth">%Month%:</span>
+        </div>
+        <div class="main-header__main-score">+ 2,345.64</div>
+        <section class="main-header__income-section">
+            <h3 class="income-section__head">Income:</h3>
+            <span class="income-section__score">+ 4,300.00</span>
+        </section> 
+        <section class="main-header__expenses-section">
+                <h3 class="expenses-section__head">Expenses:</h3>
+                <span class="expenses-section__score">- 1,954.36</span> 
+                <span class="expenses-section-badg">45&#37;</span>  
+        </section>       
+    </header>
+
+    <section class="add-budget">
+        <div class="add-budget__container">
+            <select name="user-action" id="sellect-action">
+                <option value="plus">+</option>
+                <option value="minus">-</option>
+            </select>
+
+            <input type="text" name="user-description" id="input-description" placeholder="Add description">
+
+            <input type="text" name="user-value" id="input-value" placeholder="value">
+
+            <button class="btn" type="button">Ok</button>
+        </div>
+    </section>
+
+    <section class="output-result">
+            <div class="output-result__income-section">
+                <h2 class="income-section__header">INCOME</h2>
+                <div class="income-section__list"></div>
+            </div>
+            <div class="output-result__expenses-section">
+                <h2 class="expenses-section__header">EXPENSES</h2>
+                <div class="expenses-section__list"></div>
+            </div>
+    </section>
+
+
+
+
     <script src="./js/common.js"></script>
 </body>
 </html>
