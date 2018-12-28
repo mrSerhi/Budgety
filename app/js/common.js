@@ -17,7 +17,7 @@ var budgetController = (function () {
         this.description = description;
         this.value = value;
     }
-
+    // for save objects of items and manipulation
     var budgetData = {
         allItems: {
             plus: [],
@@ -44,7 +44,7 @@ var budgetController = (function () {
             } else {
                 newItem = new Expenses(ID, description, value);
             }
-
+            // filling array of objects [{}, {}, {}]
             budgetData.allItems[action].push(newItem);
 
             return newItem;
@@ -72,13 +72,13 @@ var uIController = (function () {
     };
 
     var _nodes = {
-        selectAction: document.getElementById(_nodeClass.nodeId.selectAction), // will geting plus or minus
+        selectAction: document.getElementById(_nodeClass.nodeId.selectAction),
         inputDescription: document.getElementById(_nodeClass.nodeId.inputDescription),
         inputValue: document.getElementById(_nodeClass.nodeId.inputValue)
     };
 
     // function returns {}
-    function _getNodesValue(items) {
+    function getNodesValue(items) {
         var Nodes = items;
 
         return {
@@ -94,7 +94,7 @@ var uIController = (function () {
 
     return {
         publicGetValue: function () {
-            return _getNodesValue(_nodes); // return {}
+            return getNodesValue(_nodes); // return {}
         },
         publicGetNodeClass: function () {
             return _nodeClass; // return {}

@@ -13,7 +13,7 @@ html {
     font-size: 1rem;
     color: #ffffff; }
 
-.input, .add-budget .add-budget__container #sellect-action, .add-budget .add-budget__container #input-description, .add-budget .add-budget__container #input-value {
+.input, .add-budget .add-budget__container #select-action, .add-budget .add-budget__container #input-description, .add-budget .add-budget__container #input-value {
   margin: 0 .5rem;
   padding: 1rem 1rem;
   font-family: inherit;
@@ -25,7 +25,7 @@ html {
   border-radius: 4px;
   outline: none;
   transition: border-color .3s 0s ease-out; }
-  .input:focus, .add-budget .add-budget__container #sellect-action:focus, .add-budget .add-budget__container #input-description:focus, .add-budget .add-budget__container #input-value:focus {
+  .input:focus, .add-budget .add-budget__container #select-action:focus, .add-budget .add-budget__container #input-description:focus, .add-budget .add-budget__container #input-value:focus {
     border-color: #28B9B5; }
 
 .main-header {
@@ -93,11 +93,11 @@ html {
     display: flex;
     flex-flow: row nowrap;
     justify-content: center; }
-    .add-budget .add-budget__container #sellect-action {
+    .add-budget .add-budget__container #select-action {
       padding: 0;
       padding-right: 1rem;
       font-size: 2rem; }
-      .add-budget .add-budget__container #sellect-action option {
+      .add-budget .add-budget__container #select-action option {
         margin-right: 1rem; }
     .add-budget .add-budget__container #input-description {
       width: 80%; }
@@ -125,12 +125,13 @@ html {
 .output-result {
   display: flex;
   flex-flow: row nowrap;
+  justify-content: space-between;
   padding-top: 4rem;
   min-height: 20rem;
   height: 20rem; }
   .output-result .output-result__income-section, .output-result .output-result__expenses-section {
-    min-width: 50%;
-    width: 50%; }
+    min-width: 48%;
+    width: 48%; }
     .output-result .output-result__income-section .income-section__header, .output-result .output-result__expenses-section .income-section__header, .output-result .output-result__expenses-section .expenses-section__header {
       font-size: 1.4rem;
       text-align: center;
@@ -139,5 +140,66 @@ html {
       text-transform: uppercase; }
   .output-result .output-result__expenses-section .expenses-section__header {
     color: #e0231c; }
+  .output-result .income-section__list, .output-result .expenses-section__list {
+    display: flex;
+    flex-flow: column nowrap; }
+    .output-result .income-section__list .income-list__item, .output-result .expenses-section__list .income-list__item, .output-result .expenses-section__list .expenses-list__item {
+      display: flex;
+      flex-flow: row nowrap;
+      justify-content: space-between;
+      align-items: baseline;
+      padding: 1rem .2rem;
+      color: #000000;
+      border-top: 1px solid #dedede;
+      border-bottom: 1px solid #dedede; }
+      .output-result .income-section__list .income-list__item:nth-child(even), .output-result .expenses-section__list .income-list__item:nth-child(even), .output-result .expenses-section__list .expenses-list__item:nth-child(even) {
+        background: #f2f2f2; }
+      .output-result .income-section__list .income-list__item:hover, .output-result .expenses-section__list .income-list__item:hover, .output-result .expenses-section__list .expenses-list__item:hover {
+        justify-content: space-around; }
+        .output-result .income-section__list .income-list__item:hover .list-item__value, .output-result .expenses-section__list .income-list__item:hover .list-item__value, .output-result .expenses-section__list .expenses-list__item:hover .list-item__value {
+          flex: 1; }
+        .output-result .income-section__list .income-list__item:hover .list-item__description, .output-result .expenses-section__list .income-list__item:hover .list-item__description, .output-result .expenses-section__list .expenses-list__item:hover .list-item__description {
+          flex: 3; }
+        .output-result .income-section__list .income-list__item:hover .btn-del, .output-result .expenses-section__list .income-list__item:hover .btn-del, .output-result .expenses-section__list .expenses-list__item:hover .btn-del {
+          display: block; }
+      .output-result .income-section__list .income-list__item .list-item__description, .output-result .expenses-section__list .income-list__item .list-item__description, .output-result .expenses-section__list .expenses-list__item .list-item__description {
+        font-size: 1.1rem;
+        color: #666666; }
+      .output-result .income-section__list .income-list__item .list-item__value, .output-result .expenses-section__list .income-list__item .list-item__value, .output-result .expenses-section__list .expenses-list__item .list-item__value {
+        font-family: "Lato", sans-serif;
+        font-weight: 300;
+        font-size: 1.1rem;
+        color: #28B9B5; }
+      .output-result .income-section__list .income-list__item .btn-del, .output-result .expenses-section__list .income-list__item .btn-del, .output-result .expenses-section__list .expenses-list__item .btn-del {
+        display: none;
+        background: none;
+        outline: none;
+        font-size: 1rem;
+        color: #e0231c;
+        margin: 0;
+        padding: 0 .3rem;
+        border: 1px solid #e0231c;
+        border-radius: 50%;
+        transition: transform .2s 0s ease-out; }
+        .output-result .income-section__list .income-list__item .btn-del:hover, .output-result .expenses-section__list .income-list__item .btn-del:hover, .output-result .expenses-section__list .expenses-list__item .btn-del:hover, .output-result .income-section__list .income-list__item .btn-del:active, .output-result .expenses-section__list .income-list__item .btn-del:active, .output-result .expenses-section__list .expenses-list__item .btn-del:active {
+          cursor: pointer;
+          transform: scale(1.2); }
+  .output-result .expenses-section__list .expenses-list__item {
+    position: relative; }
+    .output-result .expenses-section__list .expenses-list__item .list-item__percetage {
+      position: absolute;
+      right: 10%;
+      margin: 0 auto;
+      display: none;
+      font-family: "Lato", sans-serif;
+      background: #eaeaea;
+      color: #6f110e;
+      border: 1px dotted #dedede;
+      border-radius: 3px;
+      opacity: .7; }
+    .output-result .expenses-section__list .expenses-list__item:hover .list-item__percetage {
+      display: inline-block; }
+    .output-result .expenses-section__list .expenses-list__item .list-item__value {
+      color: #e0231c; }
 
 /*# sourceMappingURL=main.css.map */
