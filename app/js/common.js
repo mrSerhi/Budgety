@@ -30,6 +30,7 @@ var uIController = (function () {
         inputDescription: document.getElementById(_nodeClass.nodeId.inputDescription),
         inputValue: document.getElementById(_nodeClass.nodeId.inputValue)  
     };
+
     // function return array
     function _getNodesValue(nodes) {
         var values = []
@@ -67,10 +68,9 @@ var uIController = (function () {
 var controller = (function (budgetConstr, UIConstr) {
     'use strict';
 
-    var DOM = UIConstr.publicGetNodeClass();
-
     function workWithData() {
-
+        //1.Get the fiald input data;
+        var nodeValues = UIConstr.publicGetValue(); // array
         /*
             1.Get the fiald input data;
             2.Send getting fiald data to budget controller;
@@ -78,18 +78,29 @@ var controller = (function (budgetConstr, UIConstr) {
             4.Calculate budget;
             5.Update budget UI in UI Controller;
         */
-    //1.Get the fiald input data;
-       console.log( UIConstr.publicGetValue() );
-
+    //    console.log(nodeValues);
+       return nodeValues;
     }
 
-    document.getElementsByClassName(DOM.nodeClass.btnSend)[0].addEventListener('click', workWithData);
+    function setUpEventListeners() {
+        var DOM = UIConstr.publicGetNodeClass();
 
-    document.addEventListener('keydown', function(event) {
+        document.getElementsByClassName(DOM.nodeClass.btnSend)[0].addEventListener('click', workWithData);
 
-        if (event.key === 'Enter') workWithData();
-        
-    });
+        document.addEventListener('keydown', function(event) {
+    
+            if (event.key === 'Enter') workWithData();
+            
+        });    
+    }
 
+    return {
+        init: function() {
+            console.log('Aplication is started.');
+            return setUpEventListeners();
+        }
+    };
 
 })(budgetController, uIController);
+
+controller.init();
