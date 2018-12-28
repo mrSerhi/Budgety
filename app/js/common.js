@@ -1,48 +1,95 @@
 // IIFE functions using the closures with privat data, functions and public methods
 
-var budgetController = (function() {
-    'use strict';
-
-    var _number = 10;
-
-    function _sumNumber(num) {
-        return _number + num;
-    }
-
-    return {
-        publicMethod: function(num) {
-            return _sumNumber(num);
-        },
-        publicNumber: function() {
-            return _number;
-        }
-    };
-})();
-
-var uIController = (function() {
+// BUDGET Conrtoller
+var budgetController = (function () {
     'use strict';
 
     // some code
 
 
+
 })();
 
-var controller = (function(budgetContr, UIConstr) {
+// UI Controller
+var uIController = (function () {
     'use strict';
 
-    // var bdgtCntr = budgetContr.publicMethod;
-
-    return {
-        pulicControllerMethod: function(num) {
-            // return bdgtCntr(num);
-            return budgetContr.publicMethod(num);
+    var _nodeClass = {
+        nodeId: {
+            selectAction: 'select-action',
+            inputDescription: 'input-description',
+            inputValue: 'input-value'
+        },
+        nodeClass: {
+            btnSend: 'btn-send'
         }
     };
 
+    var _nodes = {
+        selectAction: document.getElementById(_nodeClass.nodeId.selectAction), // will geting plus or minus
+        inputDescription: document.getElementById(_nodeClass.nodeId.inputDescription),
+        inputValue: document.getElementById(_nodeClass.nodeId.inputValue)  
+    };
+    // function return array
+    function _getNodesValue(nodes) {
+        var values = []
+        for( var node in nodes) {
+            values.push(nodes[node].value);
+        }
+        return values;
+        // return {
+        //     selectAction: document.getElementById(_nodeClass.nodeId.selectAction).value, // will geting plus or minus
+        //     inputDescription: document.getElementById(_nodeClass.nodeId.inputDescription).value,
+        //     inputValue: document.getElementById(_nodeClass.nodeId.inputValue).value    
+        // };
+    }
+
+    function _setNode(name, node) {
+        _nodes[name] = node;
+    }
+
+
+    return {
+        publicGetValue: function() {
+            return _getNodesValue(_nodes); // return array
+        },
+        publicGetNodeClass: function() {
+            return _nodeClass; // return object
+        },
+        pulicGetNodes: function() {
+            return _nodes; // return object
+        }
+    };
+
+})();
+
+// COMMON APP Controller
+var controller = (function (budgetConstr, UIConstr) {
+    'use strict';
+
+    var DOM = UIConstr.publicGetNodeClass();
+
+    function workWithData() {
+
+        /*
+            1.Get the fiald input data;
+            2.Send getting fiald data to budget controller;
+            3.Create the new UI items in UI Controller;
+            4.Calculate budget;
+            5.Update budget UI in UI Controller;
+        */
+    //1.Get the fiald input data;
+       console.log( UIConstr.publicGetValue() );
+
+    }
+
+    document.getElementsByClassName(DOM.nodeClass.btnSend)[0].addEventListener('click', workWithData);
+
+    document.addEventListener('keydown', function(event) {
+
+        if (event.key === 'Enter') workWithData();
+        
+    });
+
 
 })(budgetController, uIController);
-
-
-console.log(budgetController.publicNumber());
-console.log(budgetController.publicMethod(5));
-console.log(controller.pulicControllerMethod(20));
