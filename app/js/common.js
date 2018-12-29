@@ -30,6 +30,14 @@ var budgetController = (function () {
     };
 
     return {
+        /**
+         * 
+         * @param {object value} action must be 'plus' or 'minus', must be a string
+         * @param {object value} description must be a string
+         * @param {object value} value must be a Number
+         * @return {object} {id, description, value} id must be incremented on 1
+         * create objects for use getting from their values to create new elements
+         */
         publicAddItem: function (action, description, value) {
             var newItem, ID;
             // ID must be on 1 num bigger than last item into array. On example [1,2,3,4] - ID = 5, or [1,3,5] - ID = 6
@@ -67,7 +75,9 @@ var uIController = (function () {
             inputValue: 'input-value'
         },
         nodeClass: {
-            btnSend: 'btn-send'
+            btnSend: 'btn-send',
+            incomeList: 'income-section__list',
+            expensesList: 'expenses-section__list'
         }
     };
 
@@ -77,7 +87,7 @@ var uIController = (function () {
         inputValue: document.getElementById(_nodeClass.nodeId.inputValue)
     };
 
-    // function returns {}
+    // function returns {} with copy of privat _nodes values
     function getNodesValue(items) {
         var Nodes = items;
 
@@ -98,6 +108,31 @@ var uIController = (function () {
         },
         publicGetNodeClass: function () {
             return _nodeClass; // return {}
+        },
+        /**
+         * 
+         * @param {object} itemObject {id , description, value} from budgetController.publicAddItem()
+         * @param {object value} action must be 'plus' or 'minus'
+         * @return undefined
+         * create the new elements parse and substitute values into string with html code
+         */
+        publicAddNewElem: function (itemObject, action) {
+            var html, parrent;
+            if (action === 'plus') {
+                html = '<div class="income-list__item" id="income-%0%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><button class="btn-del" type="button">X</button></div> ';
+                parrent = document.getElementsByClassName(_nodeClass.nodeClass.incomeList)[0];
+            } else {
+                html = '<div class="expenses-list__item" id="expenses-%0%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><span class="list-item__percetage">21%</span><button class="btn-del" type="button">X</button></div>';
+                parrent = document.getElementsByClassName(_nodeClass.nodeClass.expensesList)[0];
+            }
+
+            html.replace('%0%', itemObject.id);
+            html = html.replace('%description%', itemObject.description);
+            html = html.replace('%value%', itemObject.value);
+
+            parrent.insertAdjacentHTML('beforeend', html);
+
+            //return html;
         }
     };
 
@@ -108,11 +143,13 @@ var controller = (function (budgetConstr, UIConstr) {
     'use strict';
 
     function workWithData() {
-        var nodeValues, newItem;
-        //1.Get the fiald input data;
+        var nodeValues, newItemObject, newElement;
+        // 1.Get the fiald input data(values for creating objects);
         nodeValues = UIConstr.publicGetValue(); // {}
-        // 2.Send getting fiald data to budget controller;
-        newItem = budgetConstr.publicAddItem(nodeValues.selectAction, nodeValues.inputDescription, parseInt(nodeValues.inputValue));
+        // 2.Send getting fiald data to budget controller; (creation objects for create new items)
+        newItemObject = budgetConstr.publicAddItem(nodeValues.selectAction, nodeValues.inputDescription, parseInt(nodeValues.inputValue));
+        // 3.Create the new UI items in UI Controller;
+        newElement = UIConstr.publicAddNewElem(newItemObject, nodeValues.selectAction);
         /*
             1.Get the fiald input data;
             2.Send getting fiald data to budget controller;
@@ -120,8 +157,6 @@ var controller = (function (budgetConstr, UIConstr) {
             4.Calculate budget;
             5.Update budget UI in UI Controller;
         */
-        //    console.log(nodeValues);
-        console.log(newItem);
         // return nodeValues;
     }
 
