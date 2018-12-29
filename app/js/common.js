@@ -81,30 +81,18 @@ var uIController = (function () {
         }
     };
 
-    var _nodes = {
-        selectAction: document.getElementById(_nodeClass.nodeId.selectAction),
-        inputDescription: document.getElementById(_nodeClass.nodeId.inputDescription),
-        inputValue: document.getElementById(_nodeClass.nodeId.inputValue)
-    };
-
-    // function returns {} with copy of privat _nodes values
-    function getNodesValue(items) {
-        var Nodes = items;
+    function getValuesFromFields() {
 
         return {
-            selectAction: Nodes.selectAction.value, // will geting plus or minus
-            inputDescription: Nodes.inputDescription.value,
-            inputValue: Nodes.inputValue.value
+            selectAction: document.getElementById(_nodeClass.nodeId.selectAction).value, // will geting plus or minus
+            inputDescription: document.getElementById(_nodeClass.nodeId.inputDescription).value,
+            inputValue: document.getElementById(_nodeClass.nodeId.inputValue).value
         };
-    }
-
-    function _setNode(name, node) {
-        _nodes[name] = node;
     }
 
     return {
         publicGetValue: function () {
-            return getNodesValue(_nodes); // return {}
+            return getValuesFromFields();
         },
         publicGetNodeClass: function () {
             return _nodeClass; // return {}
@@ -117,23 +105,34 @@ var uIController = (function () {
          * create the new elements parse and substitute values into string with html code
          */
         publicAddNewElem: function (itemObject, action) {
-            var html, parrent;
+            var html, elemClass;
             if (action === 'plus') {
                 html = '<div class="income-list__item" id="income-%0%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><button class="btn-del" type="button">X</button></div> ';
-                parrent = document.getElementsByClassName(_nodeClass.nodeClass.incomeList)[0];
+                elemClass = _nodeClass.nodeClass.incomeList;
             } else {
                 html = '<div class="expenses-list__item" id="expenses-%0%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><span class="list-item__percetage">21%</span><button class="btn-del" type="button">X</button></div>';
-                parrent = document.getElementsByClassName(_nodeClass.nodeClass.expensesList)[0];
+                elemClass = _nodeClass.nodeClass.expensesList;
             }
 
             html.replace('%0%', itemObject.id);
             html = html.replace('%description%', itemObject.description);
             html = html.replace('%value%', itemObject.value);
 
-            parrent.insertAdjacentHTML('beforeend', html);
+            document.getElementsByClassName(elemClass)[0].insertAdjacentHTML('beforeend', html);
 
             //return html;
-        }
+        },
+        publicClearFieldsValue: function () {
+            var fieldsNodeList;
+
+            fieldsNodeList = document.querySelectorAll('#' + _nodeClass.nodeId.inputDescription +
+                ', #' + _nodeClass.nodeId.inputValue);
+            // from NodeList to do array using call method and all ele-ts will have value = ''
+            Array.prototype.slice.call(fieldsNodeList).forEach(function (current) {
+                current.value = '';
+            });
+            fieldsNodeList[0].focus();
+        },
     };
 
 })();
@@ -150,6 +149,9 @@ var controller = (function (budgetConstr, UIConstr) {
         newItemObject = budgetConstr.publicAddItem(nodeValues.selectAction, nodeValues.inputDescription, parseInt(nodeValues.inputValue));
         // 3.Create the new UI items in UI Controller;
         newElement = UIConstr.publicAddNewElem(newItemObject, nodeValues.selectAction);
+        // clear the inputs value when user will enter the data
+        UIConstr.publicClearFieldsValue();
+
         /*
             1.Get the fiald input data;
             2.Send getting fiald data to budget controller;
