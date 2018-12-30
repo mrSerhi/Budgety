@@ -17,6 +17,19 @@ var budgetController = (function () {
         this.description = description;
         this.value = value;
     }
+
+    // Calculate total, take as first argument value 'plus' or 'minus', second - "inc" or "exp"
+    function calculateTotal(action, totalsName) {
+        var sum = 0;
+
+        budgetData.allItems[action].forEach(function (cur) {
+            sum += cur.value;
+        });
+
+        budgetData.totals[totalsName] = sum;
+    }
+
+
     // for save objects of items and manipulation
     var budgetData = {
         allItems: {
@@ -26,7 +39,9 @@ var budgetController = (function () {
         totals: {
             inc: 0,
             exp: 0
-        }
+        },
+        budget: 0,
+        percentage: 0
     };
 
     return {
@@ -58,7 +73,31 @@ var budgetController = (function () {
             return newItem;
         },
         publicShow: function () {
-            console.log(budgetData);
+            // console.log(budgetData);
+            console.log(calculateTotal());
+        },
+        publicCalculateBudget: function () {
+
+            // 1. Calculate total
+            calculateTotal('plus', 'inc');
+            calculateTotal('minus', 'exp');
+            // 2. Calculate the budget (budget is balance of amount)
+            budgetData.budget = budgetData.totals.inc - budgetData.totals.exp;
+            // 3. Calculate percentages
+            // Solves a problem when total inc = 0, and e.g total exp = 900. Expression 900 / 0 = infinity
+            if (budgetData.totals.inc > 0) {
+                budgetData.percentage = Math.round((budgetData.totals.exp / budgetData.totals.inc) * 100);
+            } else {
+                budgetData.percentage = -1;
+            }
+        },
+        publicGetBudgetValue: function () {
+            return {
+                totalInc: budgetData.totals.inc,
+                totalExp: budgetData.totals.exp,
+                budget: budgetData.budget,
+                percentage: budgetData.percentage
+            };
         }
     };
 
@@ -133,6 +172,9 @@ var uIController = (function () {
             });
             fieldsNodeList[0].focus();
         },
+        publicUpdateBudget: function (objValues) {
+
+        }
     };
 
 })();
@@ -143,9 +185,11 @@ var controller = (function (budgetConstr, UIConstr) {
 
     function updateBudget() {
         // 1.Calculate budget;
-        // 2.Return budget;
+        budgetConstr.publicCalculateBudget();
+        // 2.Return budget modified values;
+        var budgetValues = budgetConstr.publicGetBudgetValue(); // return {} 
         // 2.Update budget UI on UI Controller;
-
+        console.dir(budgetValues);
     }
 
     function workWithData() {
@@ -160,17 +204,19 @@ var controller = (function (budgetConstr, UIConstr) {
                 newElement = UIConstr.publicAddNewElem(newItemObject, nodeValues.selectAction);
                 // clear the inputs value when user will enter the data
                 UIConstr.publicClearFieldsValue();
+                // Update budget
+                updateBudget();
             } else {
                 console.warn('You need a type message and numbers!')
             }
         }
 
-        // 1.Get the fiald input data(values for creating objects);
+        // 1.Get the fiald input data(values for creating objects inc and exp);
         nodeValues = UIConstr.publicGetValue(); // {}
         checkInputs(nodeValues); // check input values
-        
+
         // 4. Calculate and update budget
-        // updateBudget();
+
         /*
             1.Get the fiald input data;
             2.Send getting fiald data to budget controller;
@@ -178,7 +224,7 @@ var controller = (function (budgetConstr, UIConstr) {
             4.Calculate budget;
             5.Update budget UI in UI Controller;
         */
-        
+
     }
 
     function setUpEventListeners() {
