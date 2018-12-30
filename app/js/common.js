@@ -141,17 +141,36 @@ var uIController = (function () {
 var controller = (function (budgetConstr, UIConstr) {
     'use strict';
 
+    function updateBudget() {
+        // 1.Calculate budget;
+        // 2.Return budget;
+        // 2.Update budget UI on UI Controller;
+
+    }
+
     function workWithData() {
         var nodeValues, newItemObject, newElement;
+
+        // takes obj with input values
+        function checkInputs(obj) {
+            if (obj.inputDescription !== '' && obj.inputValue > 0 && !isNaN(obj.inputValue)) {
+                // 2.Send getting fiald data to budget controller; (creation objects for create new items)
+                newItemObject = budgetConstr.publicAddItem(nodeValues.selectAction, nodeValues.inputDescription, parseFloat(nodeValues.inputValue));
+                // 3.Create the new UI items in UI Controller;
+                newElement = UIConstr.publicAddNewElem(newItemObject, nodeValues.selectAction);
+                // clear the inputs value when user will enter the data
+                UIConstr.publicClearFieldsValue();
+            } else {
+                console.warn('You need a type message and numbers!')
+            }
+        }
+
         // 1.Get the fiald input data(values for creating objects);
         nodeValues = UIConstr.publicGetValue(); // {}
-        // 2.Send getting fiald data to budget controller; (creation objects for create new items)
-        newItemObject = budgetConstr.publicAddItem(nodeValues.selectAction, nodeValues.inputDescription, parseInt(nodeValues.inputValue));
-        // 3.Create the new UI items in UI Controller;
-        newElement = UIConstr.publicAddNewElem(newItemObject, nodeValues.selectAction);
-        // clear the inputs value when user will enter the data
-        UIConstr.publicClearFieldsValue();
-
+        checkInputs(nodeValues); // check input values
+        
+        // 4. Calculate and update budget
+        // updateBudget();
         /*
             1.Get the fiald input data;
             2.Send getting fiald data to budget controller;
@@ -159,7 +178,7 @@ var controller = (function (budgetConstr, UIConstr) {
             4.Calculate budget;
             5.Update budget UI in UI Controller;
         */
-        // return nodeValues;
+        
     }
 
     function setUpEventListeners() {
