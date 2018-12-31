@@ -25,7 +25,7 @@ var budgetController = (function () {
         // budgetData.allItems[action].forEach(function (cur) {
         //     sum += cur.value;
         // });
-        sum = budgetData.allItems[action].reduce(function(acc, cur) {
+        sum = budgetData.allItems[action].reduce(function (acc, cur) {
             return acc + cur.value;
         }, 0);
 
@@ -118,7 +118,11 @@ var uIController = (function () {
         nodeClass: {
             btnSend: 'btn-send',
             incomeList: 'income-section__list',
-            expensesList: 'expenses-section__list'
+            expensesList: 'expenses-section__list',
+            incomeScore: 'income-section__score',
+            expensesScore: 'expenses-section__score',
+            expensesBadg: 'expenses-section-badg',
+            mainScore: 'main-header__main-score'
         }
     };
 
@@ -128,6 +132,15 @@ var uIController = (function () {
             selectAction: document.getElementById(_nodeClass.nodeId.selectAction).value, // will geting plus or minus
             inputDescription: document.getElementById(_nodeClass.nodeId.inputDescription).value,
             inputValue: document.getElementById(_nodeClass.nodeId.inputValue).value
+        };
+    }
+
+    function getBudgetElements() {
+        return {
+            mainScore: document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0],
+            incomeScore: document.getElementsByClassName(_nodeClass.nodeClass.incomeScore)[0],
+            expensesScore: document.getElementsByClassName(_nodeClass.nodeClass.expensesScore)[0],
+            expensesBadg: document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0]
         };
     }
 
@@ -174,8 +187,16 @@ var uIController = (function () {
             });
             fieldsNodeList[0].focus();
         },
-        publicUpdateBudget: function (objValues) {
+        publicUpdateBudgetValues: function (objValues) {
+            document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0].textContent = '+' + objValues.budget;
+            document.getElementsByClassName(_nodeClass.nodeClass.incomeScore)[0].textContent = '+' + objValues.totalInc;
+            document.getElementsByClassName(_nodeClass.nodeClass.expensesScore)[0].textContent = objValues.totalExp === 0 ? objValues.totalExp : '-' + objValues.totalExp;
 
+            if (objValues.totalInc > 0) {
+                document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = objValues.percentage + '%';
+            } else {
+                document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = '---';
+            }
         }
     };
 
@@ -189,9 +210,9 @@ var controller = (function (budgetConstr, UIConstr) {
         // 1.Calculate budget;
         budgetConstr.publicCalculateBudget();
         // 2.Return budget modified values;
-        var budgetValues = budgetConstr.publicGetBudgetValue(); // return {} 
-        // 2.Update budget UI on UI Controller;
-        console.dir(budgetValues);
+        var budgetValues = budgetConstr.publicGetBudgetValue(); // return obj 
+        // 3.Update budget UI on UI Controller;
+        UIConstr.publicUpdateBudgetValues(budgetValues);
     }
 
     function workWithData() {
@@ -200,7 +221,7 @@ var controller = (function (budgetConstr, UIConstr) {
         // takes obj with input values
         function checkInputs(obj) {
             if (obj.inputDescription !== '' && obj.inputValue > 0 && !isNaN(obj.inputValue)) {
-                // 2.Send getting fiald data to budget controller; (creation objects for create new items)
+                // 2.Send getting fiald data to budget controller; (creation objects for create new items), return {id, discription}
                 newItemObject = budgetConstr.publicAddItem(nodeValues.selectAction, nodeValues.inputDescription, parseFloat(nodeValues.inputValue));
                 // 3.Create the new UI items in UI Controller;
                 newElement = UIConstr.publicAddNewElem(newItemObject, nodeValues.selectAction);
@@ -244,6 +265,14 @@ var controller = (function (budgetConstr, UIConstr) {
     return {
         init: function () {
             console.log('Aplication is started.');
+            // when page on load, all budget values will be equal 0
+            UIConstr.publicUpdateBudgetValues({
+                totalInc: 0,
+                totalExp: 0,
+                budget: 0,
+                percentage: -1
+            });
+
             return setUpEventListeners();
         }
     };
