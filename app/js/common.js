@@ -22,9 +22,12 @@ var budgetController = (function () {
     function calculateTotal(action, totalsName) {
         var sum = 0;
 
-        budgetData.allItems[action].forEach(function (cur) {
-            sum += cur.value;
-        });
+        // budgetData.allItems[action].forEach(function (cur) {
+        //     sum += cur.value;
+        // });
+        sum = budgetData.allItems[action].reduce(function(acc, cur) {
+            return acc + cur.value;
+        }, 0);
 
         budgetData.totals[totalsName] = sum;
     }
@@ -73,8 +76,7 @@ var budgetController = (function () {
             return newItem;
         },
         publicShow: function () {
-            // console.log(budgetData);
-            console.log(calculateTotal());
+            console.log(budgetData);
         },
         publicCalculateBudget: function () {
 
