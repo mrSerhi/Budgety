@@ -16,7 +16,19 @@ var budgetController = (function () {
         this.id = id;
         this.description = description;
         this.value = value;
+        // this.percentage = -1;
     }
+    Expenses.prototype.calcPercentage = function (totalInc, totalExp) {
+        if (totalInc <= 0 || totalExp < 0) {
+            this.percentage = -1;
+        } else {
+            this.percentage = Math.round((this.value / totalInc) * 100);
+        }
+    };
+
+    Expenses.prototype.getPercentage = function () {
+        return this.percentage;
+    };
 
     // Calculate total, take as first argument value 'plus' or 'minus', second - "inc" or "exp"
     function calculateTotal(action, totalsName) {
@@ -79,7 +91,7 @@ var budgetController = (function () {
          * @param {string} action must be 'income' or 'expenses'
          * @param {number} ID must be a number
          */
-        publicDeleteItem: function(action, ID) {
+        publicDeleteItem: function (action, ID) {
             var ids, index;
 
             /*
@@ -89,10 +101,10 @@ var budgetController = (function () {
                 index = 3; // because ID = 5
             */
 
-            ids = budgetData.allItems[action].map(function(item) {
+            ids = budgetData.allItems[action].map(function (item) {
                 return item.id; // return the new array with ids
             });
-            index = ids.indexOf(ID); 
+            index = ids.indexOf(ID);
 
             if (index !== -1) {
                 budgetData.allItems[action].splice(index, 1);
@@ -115,6 +127,27 @@ var budgetController = (function () {
             } else {
                 budgetData.percentage = -1;
             }
+        },
+        publicCalculatePercentages: function () {
+
+            /**
+             * for example
+             * a = 10;
+             * b = 20;
+             * income total = 100
+             * when '%' equal:
+             * a = 10/100 * 100 = 10%;
+             * b = 20/100 * 100 = 20%;
+             */
+            budgetData.allItems.minus.forEach(function (item) {
+                item.calcPercentage(budgetData.totals.inc);
+            });
+        },
+        publicGetPercentages: function () {
+            var percentages = budgetData.allItems.minus.map(function (item) {
+                return item.getPercentage();
+            });
+            return percentages;
         },
         publicGetBudgetValue: function () {
             return {
@@ -195,7 +228,7 @@ var uIController = (function () {
          * 
          * @param {string} ID value of id's current item, which will be deleted 
          */
-        publicDeleteElem: function(selectorID) {
+        publicDeleteElem: function (selectorID) {
             document.getElementById(selectorID).remove();
         },
         publicClearFieldsValue: function () {
@@ -238,25 +271,41 @@ var controller = (function (budgetConstr, UIConstr) {
         UIConstr.publicUpdateBudgetValues(budgetValues);
     }
 
+    // update persentages into 'income' and 'exposes' sections
+    function updatePersetages() {
+        var perc;
+        // 1.Calculate 
+        budgetConstr.publicCalculatePercentages();
+        // 2. Returns modified value from budget controller
+        perc = budgetConstr.publicGetPercentages();
+        // 3. Update UI in UI controller
+        console.log(perc);
+    }
+
     function deleteItem(event) {
         var listItemId, splitId, btnDell, action, ID;
 
         listItemId = event.target.parentNode.id; // return string
         btnDell = document.getElementsByClassName('btn-del'); //HTML list of items
 
-        Array.slice.call(this, btnDell).map(function(elem) {
+        Array.slice.call(this, btnDell).map(function (elem) {
 
             if (event.target === elem) {
                 splitId = listItemId.split('-');
                 action = splitId[0]; // string
                 ID = parseInt(splitId[1]);
-            }    
+
+                budgetConstr.publicDeleteItem(action, ID);
+                // delete element from UI
+                UIConstr.publicDeleteElem(listItemId);
+            }
         });
-        budgetConstr.publicDeleteItem(action, ID);
-        // delete element from UI
-        UIConstr.publicDeleteElem(listItemId);
+
         // update UI budget
         updateBudget();
+        // update persetages
+        updatePersetages();
+
     }
 
     function workWithData() {
@@ -274,6 +323,8 @@ var controller = (function (budgetConstr, UIConstr) {
                 UIConstr.publicClearFieldsValue();
                 // Update budget
                 updateBudget();
+                // update persentages
+                updatePersetages();
             } else {
                 console.warn('You need a type message and numbers!')
             }
@@ -320,6 +371,7 @@ var controller = (function (budgetConstr, UIConstr) {
                 budget: 0,
                 percentage: -1
             });
+            UIConstr.publicClearFieldsValue();
 
             return setUpEventListeners();
         }
