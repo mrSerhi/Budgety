@@ -191,6 +191,13 @@ var uIController = (function () {
             document.getElementsByClassName(elemClass)[0].insertAdjacentHTML('beforeend', newHtml);
 
         },
+        /**
+         * 
+         * @param {string} ID value of id's current item, which will be deleted 
+         */
+        publicDeleteElem: function(selectorID) {
+            document.getElementById(selectorID).remove();
+        },
         publicClearFieldsValue: function () {
             var fieldsNodeList;
 
@@ -210,6 +217,7 @@ var uIController = (function () {
             if (objValues.totalInc > 0) {
                 document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = objValues.percentage + '%';
             } else {
+                document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0].textContent = objValues.budget;
                 document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = '---';
             }
         }
@@ -240,15 +248,15 @@ var controller = (function (budgetConstr, UIConstr) {
 
             if (event.target === elem) {
                 splitId = listItemId.split('-');
-                action = splitId[0];
+                action = splitId[0]; // string
                 ID = parseInt(splitId[1]);
-
-                // budgetConstr.publicDeleteItem(action, ID);
             }    
-            
-
         });
         budgetConstr.publicDeleteItem(action, ID);
+        // delete element from UI
+        UIConstr.publicDeleteElem(listItemId);
+        // update UI budget
+        updateBudget();
     }
 
     function workWithData() {
