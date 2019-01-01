@@ -49,10 +49,9 @@ var budgetController = (function () {
 
     return {
         /**
-         * 
-         * @param {object value} action must be 'plus' or 'minus', must be a string
-         * @param {object value} description must be a string
-         * @param {object value} value must be a Number
+         * @param {string} action must be 'plus' or 'minus', must be a string
+         * @param {string} description must be a string
+         * @param {number} value must be a Number
          * @return {object} {id, description, value} id must be incremented on 1
          * create objects for use getting from their values to create new elements
          */
@@ -74,6 +73,30 @@ var budgetController = (function () {
             budgetData.allItems[action].push(newItem);
 
             return newItem;
+        },
+        /**
+         * 
+         * @param {string} action must be 'income' or 'expenses'
+         * @param {number} ID must be a number
+         */
+        publicDeleteItem: function(action, ID) {
+            var ids, index;
+
+            /*
+                ID = 5;
+                action = 'plus' || 'minus';
+                ids = [1,2,3,5,7,9];
+                index = 3; // because ID = 5
+            */
+
+            ids = budgetData.allItems[action].map(function(item) {
+                return item.id; // return the new array with ids
+            });
+            index = ids.indexOf(ID); 
+
+            if (index !== -1) {
+                budgetData.allItems[action].splice(index, 1);
+            }
         },
         publicShow: function () {
             console.log(budgetData);
@@ -142,22 +165,22 @@ var uIController = (function () {
             return getValuesFromFields();
         },
         publicGetNodeClass: function () {
-            return _nodeClass; // return {}
+            return _nodeClass; // return obj
         },
         /**
          * 
          * @param {object} itemObject {id , description, value} from budgetController.publicAddItem()
-         * @param {object value} action must be 'plus' or 'minus'
+         * @param {string} action must be 'plus' or 'minus'
          * @return undefined
          * create the new elements parse and substitute values into string with html code
          */
         publicAddNewElem: function (itemObject, action) {
             var html, newHtml, elemClass;
             if (action === 'plus') {
-                html = '<div class="income-list__item" id="income-%id%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><button class="btn-del" type="button">X</button></div> ';
+                html = '<div class="income-list__item" id="plus-%id%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><button class="btn-del" type="button">X</button></div> ';
                 elemClass = _nodeClass.nodeClass.incomeList;
             } else {
-                html = '<div class="expenses-list__item" id="expenses-%id%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><span class="list-item__percetage">21%</span><button class="btn-del" type="button">X</button></div>';
+                html = '<div class="expenses-list__item" id="minus-%id%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><span class="list-item__percetage">21%</span><button class="btn-del" type="button">X</button></div>';
                 elemClass = _nodeClass.nodeClass.expensesList;
             }
 
@@ -211,24 +234,21 @@ var controller = (function (budgetConstr, UIConstr) {
         var listItemId, splitId, btnDell, action, ID;
 
         listItemId = event.target.parentNode.id; // return string
-        btnDell = document.getElementsByClassName('btn-del');
+        btnDell = document.getElementsByClassName('btn-del'); //HTML list of items
 
         Array.slice.call(this, btnDell).map(function(elem) {
 
             if (event.target === elem) {
                 splitId = listItemId.split('-');
                 action = splitId[0];
-                ID = splitId[1];
-                console.log('Action is ' + action, 'ID is ' + ID);
-            }    
+                ID = parseInt(splitId[1]);
 
+                // budgetConstr.publicDeleteItem(action, ID);
+            }    
+            
 
         });
-        // if (event.target === btnDell) {
-        //     splitId = listItemId.split('-');
-        //     console.log(splitId);
-        // }
-        
+        budgetConstr.publicDeleteItem(action, ID);
     }
 
     function workWithData() {
