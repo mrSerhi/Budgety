@@ -122,7 +122,9 @@ var uIController = (function () {
             incomeScore: 'income-section__score',
             expensesScore: 'expenses-section__score',
             expensesBadg: 'expenses-section-badg',
-            mainScore: 'main-header__main-score'
+            mainScore: 'main-header__main-score',
+            outputResult: 'output-result',
+            btnDel: 'btn-del'
         }
     };
 
@@ -132,15 +134,6 @@ var uIController = (function () {
             selectAction: document.getElementById(_nodeClass.nodeId.selectAction).value, // will geting plus or minus
             inputDescription: document.getElementById(_nodeClass.nodeId.inputDescription).value,
             inputValue: document.getElementById(_nodeClass.nodeId.inputValue).value
-        };
-    }
-
-    function getBudgetElements() {
-        return {
-            mainScore: document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0],
-            incomeScore: document.getElementsByClassName(_nodeClass.nodeClass.incomeScore)[0],
-            expensesScore: document.getElementsByClassName(_nodeClass.nodeClass.expensesScore)[0],
-            expensesBadg: document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0]
         };
     }
 
@@ -159,22 +152,21 @@ var uIController = (function () {
          * create the new elements parse and substitute values into string with html code
          */
         publicAddNewElem: function (itemObject, action) {
-            var html, elemClass;
+            var html, newHtml, elemClass;
             if (action === 'plus') {
-                html = '<div class="income-list__item" id="income-%0%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><button class="btn-del" type="button">X</button></div> ';
+                html = '<div class="income-list__item" id="income-%id%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><button class="btn-del" type="button">X</button></div> ';
                 elemClass = _nodeClass.nodeClass.incomeList;
             } else {
-                html = '<div class="expenses-list__item" id="expenses-%0%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><span class="list-item__percetage">21%</span><button class="btn-del" type="button">X</button></div>';
+                html = '<div class="expenses-list__item" id="expenses-%id%"><h3 class="list-item__description">%description%</h3><span class="list-item__value">%value%</span><span class="list-item__percetage">21%</span><button class="btn-del" type="button">X</button></div>';
                 elemClass = _nodeClass.nodeClass.expensesList;
             }
 
-            html.replace('%0%', itemObject.id);
-            html = html.replace('%description%', itemObject.description);
-            html = html.replace('%value%', itemObject.value);
+            newHtml = html.replace('%id%', itemObject.id);
+            newHtml = newHtml.replace('%description%', itemObject.description);
+            newHtml = newHtml.replace('%value%', itemObject.value);
 
-            document.getElementsByClassName(elemClass)[0].insertAdjacentHTML('beforeend', html);
+            document.getElementsByClassName(elemClass)[0].insertAdjacentHTML('beforeend', newHtml);
 
-            //return html;
         },
         publicClearFieldsValue: function () {
             var fieldsNodeList;
@@ -215,11 +207,36 @@ var controller = (function (budgetConstr, UIConstr) {
         UIConstr.publicUpdateBudgetValues(budgetValues);
     }
 
+    function deleteItem(event) {
+        var listItemId, splitId, btnDell, action, ID;
+
+        listItemId = event.target.parentNode.id; // return string
+        btnDell = document.getElementsByClassName('btn-del');
+
+        Array.slice.call(this, btnDell).map(function(elem) {
+
+            if (event.target === elem) {
+                splitId = listItemId.split('-');
+                action = splitId[0];
+                ID = splitId[1];
+                console.log('Action is ' + action, 'ID is ' + ID);
+            }    
+
+
+        });
+        // if (event.target === btnDell) {
+        //     splitId = listItemId.split('-');
+        //     console.log(splitId);
+        // }
+        
+    }
+
     function workWithData() {
         var nodeValues, newItemObject, newElement;
 
         // takes obj with input values
         function checkInputs(obj) {
+
             if (obj.inputDescription !== '' && obj.inputValue > 0 && !isNaN(obj.inputValue)) {
                 // 2.Send getting fiald data to budget controller; (creation objects for create new items), return {id, discription}
                 newItemObject = budgetConstr.publicAddItem(nodeValues.selectAction, nodeValues.inputDescription, parseFloat(nodeValues.inputValue));
@@ -260,6 +277,9 @@ var controller = (function (budgetConstr, UIConstr) {
             if (event.key === 'Enter') workWithData();
 
         });
+
+        document.getElementsByClassName(DOM.nodeClass.outputResult)[0].addEventListener('click', deleteItem);
+
     }
 
     return {
