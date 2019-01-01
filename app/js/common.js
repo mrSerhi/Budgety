@@ -128,8 +128,8 @@ var budgetController = (function () {
                 budgetData.percentage = -1;
             }
         },
+        // calls from prototype method .calcPercentage and to do calc
         publicCalculatePercentages: function () {
-
             /**
              * for example
              * a = 10;
@@ -139,16 +139,20 @@ var budgetController = (function () {
              * a = 10/100 * 100 = 10%;
              * b = 20/100 * 100 = 20%;
              */
+
             budgetData.allItems.minus.forEach(function (item) {
                 item.calcPercentage(budgetData.totals.inc);
             });
         },
+        // return array with percentages
         publicGetPercentages: function () {
             var percentages = budgetData.allItems.minus.map(function (item) {
                 return item.getPercentage();
             });
+
             return percentages;
         },
+        // returns updated budget values
         publicGetBudgetValue: function () {
             return {
                 totalInc: budgetData.totals.inc,
@@ -180,7 +184,8 @@ var uIController = (function () {
             expensesBadg: 'expenses-section-badg',
             mainScore: 'main-header__main-score',
             outputResult: 'output-result',
-            btnDel: 'btn-del'
+            btnDel: 'btn-del',
+            persentBadge: 'list-item__percetage'
         }
     };
 
@@ -253,6 +258,30 @@ var uIController = (function () {
                 document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0].textContent = objValues.budget;
                 document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = '---';
             }
+        },
+        // percentages is an array
+        publicUpdatePercentages: function (percentages) {
+            var budges;
+
+            budges = document.getElementsByClassName(_nodeClass.nodeClass.persentBadge);
+            Array.slice.call(this, budges).forEach(function (item, iter) {
+                item.textContent = percentages[iter] + '%';
+            });
+
+            return budges;
+
+            // another way uses callback fn
+            /*
+            var createPercentages = function (nodeList, callback) {
+                for (var i = 0; i < nodeList.length; i++) {
+                    callback(nodeList[i], i);
+                }
+            };
+
+            createPercentages(budges, function(current, index) {
+                current.textContent = percentages[index] + '%';
+            });
+            */
         }
     };
 
@@ -279,7 +308,7 @@ var controller = (function (budgetConstr, UIConstr) {
         // 2. Returns modified value from budget controller
         perc = budgetConstr.publicGetPercentages();
         // 3. Update UI in UI controller
-        console.log(perc);
+        UIConstr.publicUpdatePercentages(perc);
     }
 
     function deleteItem(event) {
@@ -305,7 +334,6 @@ var controller = (function (budgetConstr, UIConstr) {
         updateBudget();
         // update persetages
         updatePersetages();
-
     }
 
     function workWithData() {
