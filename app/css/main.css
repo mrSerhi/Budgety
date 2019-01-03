@@ -27,6 +27,8 @@ html {
   transition: border-color .3s 0s ease-out; }
   .input:focus, .add-budget .add-budget__container #select-action:focus, .add-budget .add-budget__container #input-description:focus, .add-budget .add-budget__container #input-value:focus {
     border-color: #28B9B5; }
+    .input:focus.input_red-focus, .add-budget .add-budget__container #select-action:focus.input_red-focus, .add-budget .add-budget__container #input-description:focus.input_red-focus, .add-budget .add-budget__container #input-value:focus.input_red-focus {
+      border-color: #e0231c; }
 
 .main-header {
   min-height: 300px;

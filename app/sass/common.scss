@@ -35,6 +35,10 @@ html {
 
     &:focus {
         border-color: $section-income;
+
+        &.input_red-focus {
+            border-color: #e0231c;
+        }
     }
 }
 

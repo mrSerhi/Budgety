@@ -16,8 +16,8 @@ var budgetController = (function () {
         this.id = id;
         this.description = description;
         this.value = value;
-        // this.percentage = -1;
     }
+
     Expenses.prototype.calcPercentage = function (totalInc, totalExp) {
         if (totalInc <= 0 || totalExp < 0) {
             this.percentage = -1;
@@ -31,22 +31,21 @@ var budgetController = (function () {
     };
 
     // Calculate total, take as first argument value 'plus' or 'minus', second - "inc" or "exp"
-    function calculateTotal(action, totalsName) {
+    function _calculateTotal(action, totalsName) {
         var sum = 0;
 
-        // budgetData.allItems[action].forEach(function (cur) {
+        // _budetData.allItems[action].forEach(function (cur) {
         //     sum += cur.value;
         // });
-        sum = budgetData.allItems[action].reduce(function (acc, cur) {
+        sum = _budetData.allItems[action].reduce(function (acc, cur) {
             return acc + cur.value;
         }, 0);
 
-        budgetData.totals[totalsName] = sum;
+        _budetData.totals[totalsName] = sum;
     }
 
-
     // for save objects of items and manipulation
-    var budgetData = {
+    var _budetData = {
         allItems: {
             plus: [],
             minus: []
@@ -70,8 +69,8 @@ var budgetController = (function () {
         publicAddItem: function (action, description, value) {
             var newItem, ID;
             // ID must be on 1 num bigger than last item into array. On example [1,2,3,4] - ID = 5, or [1,3,5] - ID = 6
-            if (budgetData.allItems[action].length > 0) {
-                ID = budgetData.allItems[action][budgetData.allItems[action].length - 1].id + 1;
+            if (_budetData.allItems[action].length > 0) {
+                ID = _budetData.allItems[action][_budetData.allItems[action].length - 1].id + 1;
             } else {
                 ID = 0;
             }
@@ -82,7 +81,7 @@ var budgetController = (function () {
                 newItem = new Expenses(ID, description, value);
             }
             // filling array of objects [{}, {}, {}]
-            budgetData.allItems[action].push(newItem);
+            _budetData.allItems[action].push(newItem);
 
             return newItem;
         },
@@ -101,31 +100,31 @@ var budgetController = (function () {
                 index = 3; // because ID = 5
             */
 
-            ids = budgetData.allItems[action].map(function (item) {
+            ids = _budetData.allItems[action].map(function (item) {
                 return item.id; // return the new array with ids
             });
             index = ids.indexOf(ID);
 
             if (index !== -1) {
-                budgetData.allItems[action].splice(index, 1);
+                _budetData.allItems[action].splice(index, 1);
             }
         },
         publicShow: function () {
-            console.log(budgetData);
+            console.log(_budetData);
         },
         publicCalculateBudget: function () {
 
             // 1. Calculate total
-            calculateTotal('plus', 'inc');
-            calculateTotal('minus', 'exp');
+            _calculateTotal('plus', 'inc');
+            _calculateTotal('minus', 'exp');
             // 2. Calculate the budget (budget is balance of amount)
-            budgetData.budget = budgetData.totals.inc - budgetData.totals.exp;
+            _budetData.budget = _budetData.totals.inc - _budetData.totals.exp;
             // 3. Calculate percentages
             // Solves a problem when total inc = 0, and e.g total exp = 900. Expression 900 / 0 = infinity
-            if (budgetData.totals.inc > 0) {
-                budgetData.percentage = Math.round((budgetData.totals.exp / budgetData.totals.inc) * 100);
+            if (_budetData.totals.inc > 0) {
+                _budetData.percentage = Math.round((_budetData.totals.exp / _budetData.totals.inc) * 100);
             } else {
-                budgetData.percentage = -1;
+                _budetData.percentage = -1;
             }
         },
         // calls from prototype method .calcPercentage and to do calc
@@ -140,13 +139,13 @@ var budgetController = (function () {
              * b = 20/100 * 100 = 20%;
              */
 
-            budgetData.allItems.minus.forEach(function (item) {
-                item.calcPercentage(budgetData.totals.inc);
+            _budetData.allItems.minus.forEach(function (item) {
+                item.calcPercentage(_budetData.totals.inc);
             });
         },
         // return array with percentages
         publicGetPercentages: function () {
-            var percentages = budgetData.allItems.minus.map(function (item) {
+            var percentages = _budetData.allItems.minus.map(function (item) {
                 return item.getPercentage();
             });
 
@@ -155,10 +154,10 @@ var budgetController = (function () {
         // returns updated budget values
         publicGetBudgetValue: function () {
             return {
-                totalInc: budgetData.totals.inc,
-                totalExp: budgetData.totals.exp,
-                budget: budgetData.budget,
-                percentage: budgetData.percentage
+                totalInc: _budetData.totals.inc,
+                totalExp: _budetData.totals.exp,
+                budget: _budetData.budget,
+                percentage: _budetData.percentage
             };
         }
     };
@@ -218,6 +217,12 @@ var uIController = (function () {
         }
         return action === 'plus' ? '+' + newNumber : '-' + newNumber;
     }
+    // for iteration NodeList items
+    function _forEachNodeList(nodeList, callback) {
+        for (var i = 0; i < nodeList.length; i++) {
+            callback(nodeList[i], i);
+        }
+    };
 
     return {
         publicGetValue: function () {
@@ -248,7 +253,6 @@ var uIController = (function () {
             newHtml = newHtml.replace('%value%', _formatNumbers(itemObject.value, action));
 
             document.getElementsByClassName(elemClass)[0].insertAdjacentHTML('beforeend', newHtml);
-
         },
         /**
          * 
@@ -280,7 +284,6 @@ var uIController = (function () {
             if (objValues.totalInc > 0) {
                 document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = objValues.percentage + '%';
             } else {
-                // document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0].textContent = objValues.budget;
                 document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = '---';
             }
         },
@@ -297,15 +300,11 @@ var uIController = (function () {
 
             // another way uses callback fn
             /*
-            var createPercentages = function (nodeList, callback) {
-                for (var i = 0; i < nodeList.length; i++) {
-                    callback(nodeList[i], i);
-                }
-            };
 
-            createPercentages(budges, function(current, index) {
+            _forEachNodeList(budges, function(current, index) {
                 current.textContent = percentages[index] + '%';
             });
+
             */
         },
         publicDisplayCurrentMonth: function () {
@@ -315,8 +314,16 @@ var uIController = (function () {
             date = new Date();
 
             document.getElementsByClassName(_nodeClass.nodeClass.currentMonth)[0].textContent = months[date.getMonth()] + ' ' + date.getFullYear();
+        },
+        publicOnChangeSelect: function () {
+            var inputs;
 
-        }
+            inputs = document.querySelectorAll('#' + _nodeClass.nodeId.selectAction + ', #' + _nodeClass.nodeId.inputDescription + ', #' + _nodeClass.nodeId.inputValue);
+
+            _forEachNodeList(inputs, function changeStyle(curr) {
+                curr.classList.toggle('input_red-focus');
+            });
+        },
     };
 
 })();
@@ -418,6 +425,8 @@ var controller = (function (budgetConstr, UIConstr) {
         });
 
         document.getElementsByClassName(DOM.nodeClass.outputResult)[0].addEventListener('click', deleteItem);
+
+        document.getElementById(DOM.nodeId.selectAction).addEventListener('change', UIConstr.publicOnChangeSelect);
 
     }
 
