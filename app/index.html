@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <title>Budgety</title>
     <link rel="stylesheet" href="../app/css/main.css">
 </head>
+
 <body>
     <header class="main-header">
         <div class="main-header__available-budget">
@@ -17,17 +19,17 @@
         <section class="main-header__income-section">
             <h3 class="income-section__head">Income:</h3>
             <span class="income-section__score">+ 4,300.00</span>
-        </section> 
+        </section>
         <section class="main-header__expenses-section">
-                <h3 class="expenses-section__head">Expenses:</h3>
-                <span class="expenses-section__score">- 1,954.36</span> 
-                <span class="expenses-section-badg">45&#37;</span>  
-        </section>       
+            <h3 class="expenses-section__head">Expenses:</h3>
+            <span class="expenses-section__score">- 1,954.36</span>
+            <span class="expenses-section-badg">45&#37;</span>
+        </section>
     </header>
 
     <section class="add-budget">
         <div class="add-budget__container">
-            <select name="user-action" id="sellect-action">
+            <select name="user-action" id="select-action">
                 <option value="plus">+</option>
                 <option value="minus">-</option>
             </select>
@@ -36,19 +38,50 @@
 
             <input type="text" name="user-value" id="input-value" placeholder="value">
 
-            <button class="btn" type="button">Ok</button>
+            <button class="btn btn-send" type="button">Ok</button>
         </div>
     </section>
 
     <section class="output-result">
-            <div class="output-result__income-section">
-                <h2 class="income-section__header">INCOME</h2>
-                <div class="income-section__list"></div>
+        <div class="output-result__income-section">
+            <h2 class="income-section__header">INCOME</h2>
+            <div class="income-section__list">
+                <!--  
+                    <div class="income-list__item" id="income-0">
+                        <h3 class="list-item__description">Sallary</h3>
+                        <span class="list-item__value">4000</span>
+                        <button class="btn-del" type="button">X</button>
+                    </div>
+
+                    <div class="income-list__item" id="income-1">
+                        <h3 class="list-item__description">Sallary</h3>
+                        <span class="list-item__value">4000</span>
+                        <button class="btn-del" type="button">X</button>
+                    </div>
+-->
             </div>
-            <div class="output-result__expenses-section">
-                <h2 class="expenses-section__header">EXPENSES</h2>
-                <div class="expenses-section__list"></div>
+        </div>
+
+        <div class="output-result__expenses-section">
+            <h2 class="expenses-section__header">EXPENSES</h2>
+            <div class="expenses-section__list">
+                <!--  
+                    <div class="expenses-list__item" id="expenses-0">
+                        <h3 class="list-item__description">Buy a car</h3>
+                        <span class="list-item__value">1350</span>
+                        <span class="list-item__percetage">21%</span>
+                        <button class="btn-del" type="button">X</button>
+                    </div>
+
+                    <div class="expenses-list__item" id="expenses-1">
+                            <h3 class="list-item__description">Buy a car</h3>
+                            <span class="list-item__value">1350</span>
+                            <span class="list-item__percetage">21%</span>
+                            <button class="btn-del" type="button">X</button>
+                    </div>
+-->
             </div>
+        </div>
     </section>
 
 
@@ -56,4 +89,5 @@
 
     <script src="./js/common.js"></script>
 </body>
+
 </html>

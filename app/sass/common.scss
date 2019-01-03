@@ -35,6 +35,10 @@ html {
 
     &:focus {
         border-color: $section-income;
+
+        &.input_red-focus {
+            border-color: #e0231c;
+        }
     }
 }
 
@@ -123,7 +127,7 @@ html {
 .add-budget {
     padding: 1rem 0;
     background: $gray;
-    
+
     .add-budget__container {
         min-width: 60%;
         width: 60%;
@@ -132,11 +136,12 @@ html {
         flex-flow: row nowrap;
         justify-content: center;
 
-        #sellect-action {
+        #select-action {
             @extend .input;
             padding: 0;
             padding-right: 1rem;
             font-size: 2rem;
+
             option {
                 margin-right: 1rem;
             }
@@ -162,9 +167,9 @@ html {
             color: $section-income;
             border: 1px solid $section-income;
             border-radius: 10%;
-            
+
             transition: all .2s 0s ease-out;
-            
+
             &:hover,
             &:active {
                 outline: none;
@@ -183,13 +188,14 @@ html {
 .output-result {
     display: flex;
     flex-flow: row nowrap;
+    justify-content: space-between;
     padding-top: 4rem;
     min-height: 20rem;
     height: 20rem;
 
     .output-result__income-section {
-        min-width: 50%;
-        width: 50%;
+        min-width: 48%;
+        width: 48%;
 
         .income-section__header {
             font-size: $init * 1.4;
@@ -206,6 +212,107 @@ html {
         .expenses-section__header {
             @extend .income-section__header;
             color: $section-expenses;
+        }
+    }
+
+    .income-section__list {
+        display: flex;
+        flex-flow: column nowrap;
+
+        .income-list__item {
+            display: flex;
+            flex-flow: row nowrap;
+            justify-content: space-between;
+            align-items: baseline;
+            padding: 1rem .2rem;
+            color: $dark;
+            border-top: 1px solid darken($gray, 10%);
+            border-bottom: 1px solid darken($gray, 10%);
+
+            &:nth-child(even) {
+                background: darken($gray, 2%);
+            }
+
+            &:hover {
+                justify-content: space-around;
+
+                .list-item__value {
+                    flex: 1;
+                }
+
+                .list-item__description {
+                    flex: 3;
+                }
+
+                .btn-del {
+                    display: block;
+                }
+            }
+
+            .list-item__description {
+                font-size: $init * 1.1;
+                color: lighten($dark, 40%);
+            }
+
+            .list-item__value {
+                font-family: $numbers-another;
+                font-weight: 300;
+                font-size: $init * 1.1;
+                color: $section-income;
+            }
+
+            .btn-del {
+                display: none;
+                background: none;
+                outline: none;
+                font-size: $init;
+                color: $section-expenses;
+                margin: 0;
+                padding: 0 .3rem;
+                border: 1px solid $section-expenses;
+                border-radius: 50%;
+                transition: transform .2s 0s ease-out;
+
+                &:hover,
+                &:active {
+                    cursor: pointer;
+                    transform: scale(1.2);
+                }
+            }
+        }
+    }
+
+    .expenses-section__list {
+        @extend .income-section__list;
+
+        .expenses-list__item {
+            @extend .income-list__item;
+            position: relative;
+
+            .list-item__percetage {
+                position: absolute;
+                right: 10%;
+                margin: 0 auto;  
+                display: none;
+                font-family: $numbers-another;
+                background: darken($gray, 5%);
+                color: darken($section-expenses, 25%);
+                border: 1px dotted darken($gray, 10%);
+                border-radius: 3px;
+                opacity: .7;
+                
+            }
+
+            &:hover {
+                .list-item__percetage {
+                    display: inline-block;
+                    // flex: 1;
+                }
+            }
+
+            .list-item__value {
+                color: $section-expenses;
+            }
         }
     }
 }
