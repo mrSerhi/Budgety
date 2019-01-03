@@ -185,7 +185,8 @@ var uIController = (function () {
             mainScore: 'main-header__main-score',
             outputResult: 'output-result',
             btnDel: 'btn-del',
-            persentBadge: 'list-item__percetage'
+            persentBadge: 'list-item__percetage',
+            currentMonth: 'available-budget__mounth'
         }
     };
 
@@ -208,6 +209,7 @@ var uIController = (function () {
         number = number.split('.');
         intPart = number[0];
         decPart = number[1];
+
         if (intPart.length > 3) {
             newNumber = intPart.slice(0, intPart.length - 3) + ',' + intPart.slice(intPart.length - 3, intPart.length) +
                 '.' + decPart;
@@ -305,6 +307,15 @@ var uIController = (function () {
                 current.textContent = percentages[index] + '%';
             });
             */
+        },
+        publicDisplayCurrentMonth: function () {
+            var date, months;
+
+            months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+            date = new Date();
+
+            document.getElementsByClassName(_nodeClass.nodeClass.currentMonth)[0].textContent = months[date.getMonth()] + ' ' + date.getFullYear();
+
         }
     };
 
@@ -360,7 +371,7 @@ var controller = (function (budgetConstr, UIConstr) {
     }
 
     function workWithData() {
-        var nodeValues, newItemObject, newElement;
+        var nodeValues, newItemObject;
 
         // takes obj with input values
         function checkInputs(obj) {
@@ -369,7 +380,7 @@ var controller = (function (budgetConstr, UIConstr) {
                 // 2.Send getting fiald data to budget controller; (creation objects for create new items), return {id, discription}
                 newItemObject = budgetConstr.publicAddItem(nodeValues.selectAction, nodeValues.inputDescription, parseFloat(nodeValues.inputValue));
                 // 3.Create the new UI items in UI Controller;
-                newElement = UIConstr.publicAddNewElem(newItemObject, nodeValues.selectAction);
+                UIConstr.publicAddNewElem(newItemObject, nodeValues.selectAction);
                 // clear the inputs value when user will enter the data
                 UIConstr.publicClearFieldsValue();
                 // Update budget
@@ -384,8 +395,6 @@ var controller = (function (budgetConstr, UIConstr) {
         // 1.Get the fiald input data(values for creating objects inc and exp);
         nodeValues = UIConstr.publicGetValue(); // {}
         checkInputs(nodeValues); // check input values
-
-        // 4. Calculate and update budget
 
         /*
             1.Get the fiald input data;
@@ -423,6 +432,7 @@ var controller = (function (budgetConstr, UIConstr) {
                 percentage: -1
             });
             UIConstr.publicClearFieldsValue();
+            UIConstr.publicDisplayCurrentMonth();
 
             return setUpEventListeners();
         }
