@@ -198,6 +198,25 @@ var uIController = (function () {
         };
     }
 
+    function _formatNumbers(number, action) {
+        var intPart, decPart, newNumber;
+        // first, to do absolute number
+        number = Math.abs(number); // input -10, output 10
+        // to do number with fixid the decimal point (.00)
+        number = number.toFixed(2); // returns string
+        // to change 123400 to 1,234.00 and 1234500 to 12,345.00
+        number = number.split('.');
+        intPart = number[0];
+        decPart = number[1];
+        if (intPart.length > 3) {
+            newNumber = intPart.slice(0, intPart.length - 3) + ',' + intPart.slice(intPart.length - 3, intPart.length) +
+                '.' + decPart;
+        } else {
+            newNumber = intPart + '.' + decPart;
+        }
+        return action === 'plus' ? '+' + newNumber : '-' + newNumber;
+    }
+
     return {
         publicGetValue: function () {
             return getValuesFromFields();
@@ -224,7 +243,7 @@ var uIController = (function () {
 
             newHtml = html.replace('%id%', itemObject.id);
             newHtml = newHtml.replace('%description%', itemObject.description);
-            newHtml = newHtml.replace('%value%', itemObject.value);
+            newHtml = newHtml.replace('%value%', _formatNumbers(itemObject.value, action));
 
             document.getElementsByClassName(elemClass)[0].insertAdjacentHTML('beforeend', newHtml);
 
@@ -248,14 +267,18 @@ var uIController = (function () {
             fieldsNodeList[0].focus();
         },
         publicUpdateBudgetValues: function (objValues) {
-            document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0].textContent = '+' + objValues.budget;
-            document.getElementsByClassName(_nodeClass.nodeClass.incomeScore)[0].textContent = '+' + objValues.totalInc;
-            document.getElementsByClassName(_nodeClass.nodeClass.expensesScore)[0].textContent = objValues.totalExp === 0 ? objValues.totalExp : '-' + objValues.totalExp;
+            var action;
+
+            objValues.budget > 0 ? action = 'plus' : action = 'minus';
+
+            document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0].textContent = _formatNumbers(objValues.budget, action);
+            document.getElementsByClassName(_nodeClass.nodeClass.incomeScore)[0].textContent = _formatNumbers(objValues.totalInc, 'plus');
+            document.getElementsByClassName(_nodeClass.nodeClass.expensesScore)[0].textContent = _formatNumbers(objValues.totalExp, 'minus');
 
             if (objValues.totalInc > 0) {
                 document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = objValues.percentage + '%';
             } else {
-                document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0].textContent = objValues.budget;
+                // document.getElementsByClassName(_nodeClass.nodeClass.mainScore)[0].textContent = objValues.budget;
                 document.getElementsByClassName(_nodeClass.nodeClass.expensesBadg)[0].textContent = '---';
             }
         },
